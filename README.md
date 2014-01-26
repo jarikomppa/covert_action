@@ -6,3 +6,5 @@ modding Sid Meier's Covert Action (from 1990).
 
 Everything here is released under Unlicense (public domain), unless
 mentioned otherwise.
+
+Covert Action can be bought at: http://www.gog.com/game/sid_meiers_covert_action
