@@ -1,0 +1,445 @@
+SID MEIERS COVERT ACTION (1990) FILES
+=====================================
+by deanolium and Sol_HSA
+
+Contents:
+1. BAT
+2. xSOUND.CA
+3. CVx.CAT
+4. FONTS.CV
+5. README.DOC
+6. WORLDx.DTA
+7. PROSE.DTA
+8. CRIMEx.DTA
+9. TEXT.DTA
+10. EXE
+11. PAN
+12. PIC
+13. SVE
+14. TXT
+
+Files listed as [bytes] [filename]
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+1. BAT
+------
+2654 README.BAT    - Display release notes
+1437 BINSTALL.BAT  - Install from B drive
+1437 INSTALL.BAT   - Install from A drive
+  27 COVERT.BAT    - Launch game
+
+Original game batch files for installing and launching etc. Not 
+needed these days.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+2. xSOUND.CA
+------------
+ 9360 TSOUND.CA - Tandy sound driver
+ 6331 ISOUND.CA - IBM sound driver
+  672 NSOUND.CA - No-sound driver
+18207 RSOUND.CA - Roland MT-32 sound driver
+16333 ASOUND.CA - Adlib sound driver
+
+I wonder why these aren't .exe files like all the rest. Probably
+licensed from a third party.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+3.CAT
+-----
+56449 CITIES.CAT - City images
+56739 FINAL3.CAT - End-of mission imagery (laundromat, beach, etc)
+45473 FINAL4.CAT - - "" -
+
+CAT files appear to be file libraries (kinda like doom wad, or zip), 
+each starting off with a dictionary followed by the actual data.
+
+
+Header (2 bytes)
+
+ofs | datatype | description
+----+----------+------------
+0   | 16 bits  | Number of records
+
+Record (24 bytes)
+
+ofs | datatype | description
+----+----------+------------
+0   | 12 bytes | filename.ext for the data chunk
+12  | 4 bytes  | Checksum?
+16  | 4 bytes  | Length of data
+20  | 4 bytes  | Offset of data from start of file
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+4. FONTS.CV
+-----------
+2756 FONTS.CV
+
+Assuming this contains the fonts..
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+5. README.DOC
+-------------
+1968 README.DOC
+
+Plain ascii file. The same text that is printed by README.BAT;
+basically release notes.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+6. WORLDx.DTA
+-------------
+1124 WORLD0.DTA
+1124 WORLD1.DTA
+1124 WORLD2.DTA
+
+City data for the three different world maps used in the game. 
+Fixed-length records again; the three files are the same length, 
+and start with the two 2-byte values 0x0010 0x0010.
+
+One city record appears to be 34 bytes long. After the 16 cities, 
+data changes to 16 organizations with a 36 byte record size.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+7. PROSE.DTA
+------------
+2448 PROSE.DTA
+
+Some of the strings used in the middle of the game, like what your 
+CIA contact says or your boss congratulating you for arrest, etc.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+8. CRIMEx.DTA
+-------------
+1424 CRIME0.DTA
+1108 CRIME1.DTA
+1560 CRIME2.DTA
+1736 CRIME3.DTA
+1204 CRIME4.DTA
+1468 CRIME5.DTA
+1336 CRIME6.DTA
+1556 CRIME7.DTA
+1780 CRIME8.DTA
+1468 CRIME9.DTA
+1380 CRIME10.DTA
+1288 CRIME11.DTA
+1332 CRIME12.DTA
+
+Crime files
+-----------
+
+Header (4 bytes)
+
+ofs | datatype | description
+----+----------+------------
+0   | 16 bits  | Number of participants
+2   | 16 bits  | Number of events + 1
+
+Followed by participant records
+
+Participants (48 bytes)
+
+ofs | datatype | description
+----+----------+------------
+0   | 16 bits  | always 0xffff
+2   | 16 bits  | ?
+4   | asciiz   | 32 bytes for participant role + zero byte
+36  | 16 bits  | ?
+38  | byte     | Mastermind flag. 1 for mastermind, 0 for normal
+39  | byte     | ?
+40  | 16 bits  | always 0
+42  | 16 bits  | ?
+44  | 16 bits  | Rank of Participant, used solely for scoring
+46  | 16 bits  | ?
+
+Followed by event records
+
+Events (44 bytes)
+
+ofs | datatype | description
+----+----------+------------
+0   | 16 bits  | Person doing the event (so person sending a message 
+    |          | or committing a crime)
+2   | 16 bits  | Always 0
+4   | 16 bits  | Message ID
+6   | asciiz   | 32 bytes for description of event + zero byte
+38  | byte     | Person the event is happening to (00 for crimes)
+39  | byte     | Type of event. 
+40  | byte     | Bit-mask of items received by the person doing the event.
+41  | byte     | Bit-mask of items destroyed by the event. 
+42  | 16 bits  | Score of event.
+
+Followed by 44 bytes of padding (empty event) starting with 0xff as 
+the first field, otherwise zero.
+
+Followed by objects until end of file
+
+Objects (18 bytes)
+
+ofs | datatype | description
+----+----------+------------
+0   | asciiz   | 16 bytes for name of object + zero byte
+17  | byte     | Picture ID of object
+18  | byte     | Always 0xff
+
+Event types are:
+id | name
+---+-----
+02 | Sent message
+03 | Received message
+08 | Met with
+09 | Was met by
+20 | Crime
+
+02/03 and 08/09 must happen in pairs
+
+Picture IDs are:
+id | name
+---+-----
+00 | Processed Drugs 
+01 | Sniper Rifle / Weapons 
+02 | Raw Drugs 
+03 | Chemicals / Supplies 
+04 | Explosives 
+05 | Alarm Bypass / Product 
+06 | Photographs 
+07 | Hostage / Pilot / Escapee 
+08 | Bomb 
+09 | Payoff / $1,000,000 / Gold Coin 
+0a | Photographs 
+0b | Camera 
+0c | Blueprints / Mission Plans 
+0d | Stolen Goods / Jeep / Sample Item / Forgery / Equipment 
+0e | Passwords 
+
+Crime Logic
+-----------
+The game seems to work on the overal schedule of:
+
+1) The 'organizer' (usually first person on the list of participants) 
+sends messages to each other participant, usually letting them know 
+they have to do some evil
+
+2) Minor crimes are committed - usually to get items
+
+3) These items are given to other people, either through meetings or 
+messages
+
+4) The people with the items then commit the 'major crime' (just 
+another crime, but one which uses up items and gives score)
+
+5) The people who have done the major crimes then tell someone they've 
+succeeded.
+
+And the logic seems to require this rough order. So a person won't be 
+able to commit a 'crime' (including withdrawing money) until they have
+been messaged first. In fact, if they aren't messaged, the game will 
+ignore the crime events totally.
+
+So, the game seems to do the messages which don't require or generate 
+items first, in the rough order of first participants messages, then 
+second participants, and so on. After this, crimes which generate 
+items (but don't require items) are committed. Then the game will run 
+all messages which deal with that item, as long as the person who is 
+sending the message has the item. It will deal with messages chains, 
+where items are passed from person A->person B->person C in that 
+order. It also deals with meetings in a similar fashion (I'm not sure 
+if meetings occur after messages, or if they are mixed). When someone 
+is set to do a crime that requires/uses up an item, this will only occur 
+after they get it (other people might still be doing the item transfer 
+chain in the meantime). Then it goes back to messages/meetings that deal 
+with any new generated items.
+
+Once all events that can occur have, the mission is over.
+
+That's the general gist - but there seems to be some other nuances 
+involved. It looks like you can't have two identical types of events 
+happening between the same people (so no A-messages->B, then later 
+A-messages->B - unless items are invoved in one of them to make it 
+unique). 
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+9. TEXT.DTA
+-----------
+23357 TEXT.DTA
+
+Lots of the game strings. Messages, bulletins, etc.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+10. EXE
+-------
+10390 EGRAPHIC.EXE - EGA graphics driver
+ 6756 MGRAPHIC.EXE - MCGA/VGA graphics driver
+ 9428 CGRAPHIC.EXE - CGA graphics driver
+ 8852 TGRAPHIC.EXE - Tandy graphics driver
+ 7325 INTRO.EXE    - Graphics/sound/joystick selection pages at the start
+51575 BUG.EXE      - Electronics minigame
+20247 CODE.EXE     - Code-breaking minigame
+80431 TAC.EXE      - Break-in minigame
+29813 CHASE.EXE    - Car-chase minigame
+ 7761 COVERT.EXE   - Game launcher
+  980 MISC.EXE     - Common code overlay?
+83589 GAME.EXE     - Game proper
+80589 FINAL.EXE    - Intro, menus and boss briefing
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+11. PAN
+-------
+14560 BUSTOUT.PAN
+11102 RESEARCH.PAN
+ 8838 WARNING.PAN
+ 8232 ESCAPE.PAN
+15840 BUGCAR.PAN
+16268 SURNDR01.PAN
+14924 OFFICEM.PAN
+ 9952 CRYPTO.PAN
+18816 BRIEFING.PAN
+19418 BLDING04.PAN
+ 7718 FOLLOWED.PAN
+15750 BLDING03.PAN
+ 7476 CAPTRD01.PAN
+15030 OFFICEF.PAN
+16364 BLDING02.PAN
+ 9846 TITLE2.PAN
+11180 COMM.PAN
+ 7866 HQ.PAN
+16920 BLDING01.PAN
+16680 INJAIL.PAN
+12228 BINOS3.PAN
+11402 INTRGATE.PAN
+16962 CREDITS.PAN
+21710 WOUNDED.PAN
+
+PAN files are the graphics for all of the animated sequences, starting 
+with a PANI tag which suggests they're related to some tool not 
+specific for this game (as game data files are tagless).
+
+All of the files appear to contain the same first 28 bytes, most 
+likely containing stuff like resolution. The data itself is very 
+likely to be compressed.
+
+The format doesn't seem to be FLI/FLC (autodesk) or ANM (deluxe paint 
+animator) which were popular at the time.. however, some sort of RLE 
+scheme is likely to be in use, so that only the changed parts of the 
+image are stored. Note how the WOUNDED animation is the largest file; 
+the animation changes a lot of screen pixels every frame.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+12. PIC
+-------
+ 2263 LABS.PIC
+ 8965 AD.PIC
+11252 HOTEL.PIC
+ 7871 GUYS3.PIC
+ 7816 GUYS2.PIC
+ 2568 GENDER.PIC
+ 6688 FACESF.PIC
+ 4222 AFRICA.PIC
+ 6106 FACES.PIC
+ 5896 EUROPE.PIC
+ 6594 EQUIP2.PIC
+ 6136 EQUIP1M.PIC
+ 6266 EQUIP1.PIC
+ 5062 SNEAKIN.PIC
+10339 SPRITES.PIC
+10370 SPRITESF.PIC
+10536 STREET.PIC
+ 3128 BOARD.PIC
+ 4148 WIRETAP.PIC
+ 9995 CHASE.PIC
+ 6552 CENTRAL.PIC
+ 4207 CARS.PIC
+ 5793 TRAINING.PIC
+ 2043 CAMERA.PIC
+ 2695 BUGS.PIC
+  917 ICONS.PIC
+
+PIC format (format flag 0xF)
+
+ofs | datatype | description
+----+----------+------------
+0   | 16 bits  | Format flag. 
+2   | 16 bits  | Width, always 320
+4   | 16 bits  | Height, always 200
+6   | 16 bytes | Pixel color mappings for cga mode (apparently)
+22  | byte     | Max LZW dictionary bit width, always 0xB
+23  | LZW data | image data in LZW+RLE compressed format
+
+PIC format (format flag 0x7)
+
+ofs | datatype | description
+----+----------+------------
+0   | 16 bits  | Format flag. 
+2   | 16 bits  | Width, always 320
+4   | 16 bits  | Height, always 200
+6   | byte     | Max LZW dictionary bit width, always 0x0B
+7   | LZW data | image data in LZW+RLE compressed format
+
+The image data is stored as LZW compressed RLE stream. The LZW resets 
+when the dictionary gets full (i.e, there's no separate reset signal).
+Under the LZW the data is compressed with RLE, so that if a pixel byte 
+is 0x90, the previous pixel is repeated as many times as the next byte 
+says; if the repeat value is 0, the pixel value is 0x90.
+
+To reiterate, the RLE works this way:
+aa 90 bb
+if bb = 0, output is "aa 90"
+if bb != 0, output is "aa" * (bb+1)
+
+And yes, if you want a stream of 90's, you do 90 00 90 xx.
+
+Each pixel byte represents two 16-color pixels.
+
+PIC palette
+-----------
+The PIC image palette appears to be the "standard" DOS palette with 
+color number 5 changed to black, probably so that they can draw 
+silhouettes.
+
+0xff000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 
+0xffaa0000, 0xff000000, 0xffaa5500, 0xffaaaaaa,
+0xff555555, 0xff5555ff, 0xff55ff55, 0xff55ffff, 
+0xffff5555, 0xffff55ff, 0xffffff55, 0xffffffff
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+13. CVx.SVE
+-----------
+10936 CV0.SVE
+
+Save file(s), likely a dump of the whole game state, including your 
+career data.
+
+
+-   -  - -- --- ------------------------------------- --- -- -  -   -
+
+14. TXT
+-------
+28919 PLOT.TXT  - Strings for the boss (de)briefings.
+ 6614 CLUES.TXT - Strings for the clues, like "xyz has been traced 
+                  to a known blackmailer."
+                  
+ 
