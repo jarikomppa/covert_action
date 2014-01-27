@@ -3,7 +3,7 @@
 #include "SDL.h"
 
 #define PUTPIXEL(x,y,c) \
-  ((unsigned int*)gSDLScreenBuffer->pixels)[(x) + (y) * (gSDLScreenBuffer->pitch / 4)] = (c);
+	((unsigned int*)gSDLScreenBuffer->pixels)[(x) + (y) * (gSDLScreenBuffer->pitch / 4)] = (c);
 
 #define PITCH (gSDLScreenBuffer->pitch / 4)
 
@@ -13,15 +13,15 @@ unsigned int *gImage;
 // standard dos 16 color palette (except dos was 6 bit, this is 8 bit scaled from the 6 bit values)
 int DOS_Palette32[16] = 
 {
-    0xff000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 0xffaa0000, 0xffaa00aa, 0xffaa5500, 0xffaaaaaa,
-    0xff555555, 0xff5555ff, 0xff55ff55, 0xff55ffff, 0xffff5555, 0xffff55ff, 0xffffff55, 0xffffffff
+	0xff000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 0xffaa0000, 0xffaa00aa, 0xffaa5500, 0xffaaaaaa,
+	0xff555555, 0xff5555ff, 0xff55ff55, 0xff55ffff, 0xffff5555, 0xffff55ff, 0xffffff55, 0xffffffff
 };
 
 // covert action palette is the same, except index 5 is set to black
 int CA_Palette32[16] = 
 {
-    0xff000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 0xffaa0000, 0xff000000, 0xffaa5500, 0xffaaaaaa,
-    0xff555555, 0xff5555ff, 0xff55ff55, 0xff55ffff, 0xffff5555, 0xffff55ff, 0xffffff55, 0xffffffff
+	0xff000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 0xffaa0000, 0xff000000, 0xffaa5500, 0xffaaaaaa,
+	0xff555555, 0xff5555ff, 0xff55ff55, 0xff55ffff, 0xffff5555, 0xffff55ff, 0xffffff55, 0xffffffff
 };
 
 
@@ -47,14 +47,20 @@ public:
 		{
 			out >>= 1;
 			int data = mData[mOffset];
+
 			if (data & (1 << mState))
+			{
 				out |= 1 << (aBits - 1);
+			}
+
 			mState++;
+			
 			if (mState == 8)
 			{
 				mState = 0;
 				mOffset++;
 			}
+
 			bitsout++;
 		}
 		return out;
@@ -72,7 +78,7 @@ protected:
 	};
 	LzwData mDictionary[2048];
 	int mMaxWordWidth;
-	unsigned short	mStack[1024];
+	unsigned short  mStack[1024];
 	int mStackTop;
 	int mWordWidth;
 	int mWordMask;
@@ -83,7 +89,7 @@ protected:
 public:
 	void init(void *aData)
 	{
-		mBitStream.init(aData);		
+		mBitStream.init(aData);   
 		mStackTop = 0;
 		reset();
 	}
@@ -106,64 +112,59 @@ public:
 
 	unsigned char get()
 	{
-		unsigned char RetVal=0;
-		int TempIndex;
-		int Index;
+		int tempIndex;
+		int index;
 
-		// if pixel stack is empty fill with decoded data from file
+		// if pixel stack is empty, get some more data
 		if (mStackTop == 0) 
 		{
 			// Decode data from file buffer
 
-			TempIndex = Index = mBitStream.get(mWordWidth);
+			tempIndex = index = mBitStream.get(mWordWidth);
 
-			// If default guess is invalid (or complex?) Set values to root lookup Index
-			if (Index >= mDictionaryTop)
+			// If value is outside known dictionary, invent it
+			if (index >= mDictionaryTop)
 			{
-				TempIndex = mDictionaryTop;
-				Index = mPrevIndex; 
+				tempIndex = mDictionaryTop;
+				index = mPrevIndex; 
 				mStack[mStackTop++] = mPrevData;
 			}
 
-			// Folow DecodeTable list, adding each item's pixel to the stack until 
+			// Folow the dictionary, adding each item's pixel to the stack until 
 			// the end of the list (0xFFFF)
-			while (mDictionary[Index].mNext != 0xFFFF)
+			while (mDictionary[index].mNext != 0xFFFF)
 			{
-				mStack[mStackTop++] = (Index & 0xff00) + mDictionary[Index].mData;
-				Index = mDictionary[Index].mNext;
+				mStack[mStackTop++] = (index & 0xff00) + mDictionary[index].mData;
+				index = mDictionary[index].mNext;
 			}
 
-			// Push last node's pixel data, and remember pixel in 'PrevPixel'
-			mPrevData = mDictionary[Index].mData;
+			// Push data in stack
+			mPrevData = mDictionary[index].mData;
 			mStack[mStackTop++] = mPrevData; 
 
-			// Set Decode Table data at this position
+			// Store current position in dictionary
 			mDictionary[mDictionaryTop].mNext = mPrevIndex;
 			mDictionary[mDictionaryTop].mData = mPrevData;
 
-			mPrevIndex = TempIndex;
+			mPrevIndex = tempIndex;
 
-			// Move to next 'initial' index and Update Bitflags if necessary
+			// Next dictionary entry; if this word size is full, grow it
 			mDictionaryTop++;
-			if (mDictionaryTop>mWordMask)
+			if (mDictionaryTop > mWordMask)
 			{
 				mWordWidth++;
-				mWordMask<<=1;
-				mWordMask|=1;
+				mWordMask <<= 1;
+				mWordMask |= 1;
 			}
 
-			// Reset Decode Table (and drop recorded pixel lists) if previous data grows too large
+			// If dictionary is full, reset
 			if (mWordWidth > mMaxWordWidth)
 			{
 				reset();
 			}
 		}
 
-		// Return pixel data from top of stack
-		mStackTop--;
-		RetVal=(unsigned char)(mStack[mStackTop]);
-
-		return RetVal;
+		return mStack[mStackTop];
 	}
 };
 
@@ -191,13 +192,13 @@ unsigned char * DecodePicData(void *aData, int aWidth, int aHeight)
 		else
 		{
 			int data = lzw.get();
-				
+
 			// Is it the RLE opcode?
 			if (data != 0x90)
 			{
 				// Nope, just a pixel.
 				pixel = data; 
-			}		
+			}   
 			else
 			{
 				// Yes, how many repeats?
@@ -213,14 +214,14 @@ unsigned char * DecodePicData(void *aData, int aWidth, int aHeight)
 					// Otherwise, set up RLE (note that code can't be 1)
 					rleCount = repeat - 2; 
 				}
-			}				
+			}       
 		}
 
 		// One byte has two 16-color pixels
 		image[i] = pixel & 0x0f;
 		i++;
 		image[i] = (pixel >> 4) & 0x0f;
-	}		
+	}   
 	return image;
 }
 
@@ -288,11 +289,11 @@ void render()
 		}
 	}
 
-    if (SDL_MUSTLOCK(gSDLScreenBuffer)) 
-        SDL_UnlockSurface(gSDLScreenBuffer);
+	if (SDL_MUSTLOCK(gSDLScreenBuffer)) 
+		SDL_UnlockSurface(gSDLScreenBuffer);
 
 
-    SDL_UpdateRect(gSDLScreenBuffer, 0, 0, 640, 400);    
+	SDL_UpdateRect(gSDLScreenBuffer, 0, 0, 640, 400);    
 
 	SDL_Delay(100);
 }
@@ -301,25 +302,25 @@ void render()
 int main(int argc, char *argv[])
 {
 	// Initialize SDL's subsystems - in this case, only video.
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) 
+	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) 
 	{
-        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
-        exit(1);
-    }
+		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+		exit(1);
+	}
 
 	// Register SDL_Quit to be called at exit; makes sure things are
 	// cleaned up when we quit.
-    atexit(SDL_Quit);
-    
+	atexit(SDL_Quit);
+
 	// Attempt to create a 640x400 window with 32bit pixels.
-    gSDLScreenBuffer = SDL_SetVideoMode(640, 400, 32, SDL_SWSURFACE);
-	
+	gSDLScreenBuffer = SDL_SetVideoMode(640, 400, 32, SDL_SWSURFACE);
+
 	// If we fail, return error.
-    if ( gSDLScreenBuffer == NULL ) 
+	if ( gSDLScreenBuffer == NULL ) 
 	{
-        fprintf(stderr, "Unable to set 640x400 video: %s\n", SDL_GetError());
-        exit(1);
-    }
+		fprintf(stderr, "Unable to set 640x400 video: %s\n", SDL_GetError());
+		exit(1);
+	}
 
 	if (argc < 2)
 	{
@@ -330,8 +331,8 @@ int main(int argc, char *argv[])
 	work(argv[1]);
 
 	// Main loop: loop forever.
-    while (1)
-    {
+	while (1)
+	{
 		// Poll for events, and handle the ones we care about.
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) 
@@ -350,8 +351,8 @@ int main(int argc, char *argv[])
 			}
 		}
 		// Render stuff
-        render();
-    }
-    return 0;
+		render();
+	}
+	return 0;
 }
 
