@@ -164,6 +164,7 @@ public:
 			}
 		}
 
+		mStackTop--;
 		return mStack[mStackTop];
 	}
 };
