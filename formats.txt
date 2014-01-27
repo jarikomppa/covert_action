@@ -15,7 +15,7 @@ Contents:
 10. EXE
 11. PAN
 12. PIC
-13. SVE
+13. CVx.SVE
 14. TXT
 
 Files listed as [bytes] [filename]
@@ -70,7 +70,7 @@ Record (24 bytes)
 
 ofs | datatype | description
 ----+----------+------------
-0   | 12 bytes | filename.ext for the data chunk
+0   | 12 bytes | filename.ext for the data chunk (pad with zeros)
 12  | 4 bytes  | Checksum?
 16  | 4 bytes  | Length of data
 20  | 4 bytes  | Offset of data from start of file
@@ -99,9 +99,9 @@ basically release notes.
 
 6. WORLDx.DTA
 -------------
-1124 WORLD0.DTA
-1124 WORLD1.DTA
-1124 WORLD2.DTA
+1124 WORLD0.DTA - Europe
+1124 WORLD1.DTA - Africa
+1124 WORLD2.DTA - Central America
 
 City data for the three different world maps used in the game. 
 Fixed-length records again; the three files are the same length, 
@@ -147,7 +147,7 @@ Header (4 bytes)
 ofs | datatype | description
 ----+----------+------------
 0   | 16 bits  | Number of participants
-2   | 16 bits  | Number of events + 1
+2   | 16 bits  | Number of events
 
 Followed by participant records
 
@@ -183,8 +183,8 @@ ofs | datatype | description
 41  | byte     | Bit-mask of items destroyed by the event. 
 42  | 16 bits  | Score of event.
 
-Followed by 44 bytes of padding (empty event) starting with 0xff as 
-the first field, otherwise zero.
+Note that the last event is just a marker - starting with 0xff byte, 
+otherwise zero.
 
 Followed by objects until end of file
 
@@ -349,32 +349,33 @@ the animation changes a lot of screen pixels every frame.
 
 12. PIC
 -------
- 2263 LABS.PIC
- 8965 AD.PIC
-11252 HOTEL.PIC
- 7871 GUYS3.PIC
- 7816 GUYS2.PIC
- 2568 GENDER.PIC
- 6688 FACESF.PIC
- 4222 AFRICA.PIC
- 6106 FACES.PIC
- 5896 EUROPE.PIC
- 6594 EQUIP2.PIC
- 6136 EQUIP1M.PIC
- 6266 EQUIP1.PIC
- 5062 SNEAKIN.PIC
-10339 SPRITES.PIC
-10370 SPRITESF.PIC
-10536 STREET.PIC
- 3128 BOARD.PIC
- 4148 WIRETAP.PIC
- 9995 CHASE.PIC
- 6552 CENTRAL.PIC
- 4207 CARS.PIC
- 5793 TRAINING.PIC
- 2043 CAMERA.PIC
- 2695 BUGS.PIC
-  917 ICONS.PIC
+ 2263 LABS.PIC     - MPS labs splash screen
+ 8965 AD.PIC       - Ad for other MPS games, quit screen
+11252 HOTEL.PIC    - Your hotel backdrop
+ 7871 GUYS3.PIC    - Tiles for breakin minigame
+ 7816 GUYS2.PIC    - Tiles for breakin (and car chase?) minigames
+ 2568 GENDER.PIC   - Gender selection screen
+ 6688 FACESF.PIC   - Pieces to generate female faces, icons and 
+                     paperclip for reports, map airplane sprites
+ 6106 FACES.PIC    - Same for male faces
+ 4222 AFRICA.PIC   - Central europe/africa map
+ 5896 EUROPE.PIC   - Europe map
+ 6552 CENTRAL.PIC  - Central america map
+ 6594 EQUIP2.PIC   - Breakin equip screen sprites
+ 6136 EQUIP1M.PIC  - Breakin equip screen, male
+ 6266 EQUIP1.PIC   - Breakin equip screen, female
+ 5062 SNEAKIN.PIC  - Breakin minigame load screen
+10339 SPRITES.PIC  - Breakin minigame sprites, male
+10370 SPRITESF.PIC - Breakin minigame sprites, female
+10536 STREET.PIC   - First person view frames in chase minigame
+ 3128 BOARD.PIC    - Electronics minigame background
+ 4148 WIRETAP.PIC  - Wiretap minigame load screen
+ 9995 CHASE.PIC    - Chase minigame sprites
+ 4207 CARS.PIC     - Car selection screen
+ 5793 TRAINING.PIC - Training screen
+ 2043 CAMERA.PIC   - Breakin/wiretap "photo" picture
+ 2695 BUGS.PIC     - Tiles for electronics minigame
+  917 ICONS.PIC    - Icons for items in crimes
 
 PIC format (format flag 0xF)
 
@@ -428,10 +429,13 @@ silhouettes.
 
 13. CVx.SVE
 -----------
-10936 CV0.SVE
+? CV0.SVE
+? CV1.SVE
+? CV2.SVE
+? CV3.SVE
 
 Save file(s), likely a dump of the whole game state, including your 
-career data.
+career data. Variable size.
 
 
 -   -  - -- --- ------------------------------------- --- -- -  -   -
