@@ -53,8 +53,8 @@ licensed from a third party.
 3.CAT
 -----
 56449 CITIES.CAT - City images
-56739 FINAL3.CAT - End-of mission imagery (laundromat, beach, etc)
-45473 FINAL4.CAT - - "" -
+56739 FINAL3.CAT - End-of-mission imagery (beach, casino)
+45473 FINAL4.CAT - End-of-mission imagery (laundromat, office)
 
 CAT files appear to be file libraries (kinda like doom wad, or zip), 
 each starting off with a dictionary followed by the actual data.
@@ -75,6 +75,10 @@ ofs | datatype | description
 16  | 4 bytes  | Length of data
 20  | 4 bytes  | Offset of data from start of file
 
+Later versions of the .cat format (as found in other Microprose 
+games) don't include the "Checksum?" field. The game doesn't seem 
+to care about the value, so there doesn't seem to be any reason to
+spend time figuring out how to calculate it either.
 
 -   -  - -- --- ------------------------------------- --- -- -  -   -
 
