@@ -422,10 +422,11 @@ Each pixel byte represents two 16-color pixels.
 PIC palette
 -----------
 The PIC image palette appears to be the "standard" DOS palette with 
-color number 5 changed to black, probably so that they can draw 
-silhouettes.
+color number 5 changed to black, so that they can draw silhouettes.
+Zero index is the transparent color, while color 5 is used as the
+opaque black color.
 
-0xff000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 
+0x00000000, 0xff0000aa, 0xff00aa00, 0xff00aaaa, 
 0xffaa0000, 0xff000000, 0xffaa5500, 0xffaaaaaa,
 0xff555555, 0xff5555ff, 0xff55ff55, 0xff55ffff, 
 0xffff5555, 0xffff55ff, 0xffffff55, 0xffffffff
