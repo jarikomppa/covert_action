@@ -131,7 +131,7 @@ int find_color(unsigned int c)
 	int b1 = c & 0xff;
 
     // If alpha is zero (or nearly so), use color 0
-    if ((c >> 24) & 0xff < 0x3f)
+    if (((c >> 24) & 0xff) < 0x3f)
     {
         return 0;
     }
