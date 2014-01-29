@@ -348,6 +348,43 @@ scheme is likely to be in use, so that only the changed parts of the
 image are stored. Note how the WOUNDED animation is the largest file; 
 the animation changes a lot of screen pixels every frame.
 
+Header
+
+ofs | datatype | description
+----+----------+------------
+0   | 32 bit   | header tag 'PANI'
+4   | byte     | always 03
+5   | byte     | always 01
+6   | byte     | always 01
+7   | byte     | always 00
+8   | byte     | always 03
+9   | 15 bytes | color mapping table from color 1 onwards 
+    |          | (color 5 maps to color 0)
+24  | 5 bytes  | always 0
+29  | 16 bit   | width -1
+31  | 16 bit   | height -1
+33  | 16 bit   | ? 1, 3, 4, 5
+35  | byte     | ? 0, 1, 2, 
+36  | 16 bit   | ? 0, 1, 7, 5
+38  | 16 bit   | ? frame count?
+40  | 16 bit   | ? often 0xc8
+42  | 8 bit    | ? often 0x0b
+
+In 18 of the animation files, byte at offset 42 is 0xb, followed by
+a variety of different kind of data, hinting that the animation 
+frames might be delta-encoded PIC data frames.
+
+When offset 42 is 0xb, offset 35 is always 1 and offset 36 is 
+always 7, so these may be format flags. For all other files
+in this category, offset 33 is always 1, except for bustout.pan,
+for which it is 3.
+
+If offset 40 is 0xc8, offset 42 is always 0xb. binos3.pan has
+0xb at offset 42, but offset 40 isn't 0xc8.
+
+For files where offset 42 isn't 0xb, a 0xb byte can be found 
+later on (offset 0x220 for blding*.pan and title2.pan, but
+0x21e for credits.pan).
 
 -   -  - -- --- ------------------------------------- --- -- -  -   -
 
