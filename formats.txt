@@ -160,13 +160,13 @@ Participants (48 bytes)
 ofs | datatype | description
 ----+----------+------------
 0   | 16 bits  | always 0xffff
-2   | 16 bits  | ?
+2   | 16 bits  | Exposure. How common are clues and how easy is to link clues to suspects.
 4   | asciiz   | 32 bytes for participant role + zero byte
 36  | 16 bits  | ?
 38  | byte     | Mastermind flag. 1 for mastermind, 0 for normal
 39  | byte     | ?
 40  | 16 bits  | always 0
-42  | 16 bits  | ?
+42  | 16 bits  | Clue type. What type of clue is to be associated with plotter. Enum of int16.
 44  | 16 bits  | Rank of Participant, used solely for scoring
 46  | 16 bits  | ?
 
@@ -229,6 +229,20 @@ id | name
 0c | Blueprints / Mission Plans 
 0d | Stolen Goods / Jeep / Sample Item / Forgery / Equipment 
 0e | Passwords 
+
+Clue types are:
+id | type
+---+-----
+00 | vehicle
+01 | weapon
+02 | address
+03 | airline ticket
+04 | telegram
+05 | money (hundreds USD)
+06 | money (thousands USD)
+07 | identity document
+
+Clue types are defined in the CRIME??.DTA file. Apparently some clues are hardcoded by the game (that's how "ADDRESS is the base of a known electronics specialist/blueprint inspector/etc"). Changing this flag can lead to clues like "El al #2 is the base of a known electronics specialist". Setting a clue type of 8 and above leads to an out of bounds check and garbage data being read (buffer overrun).
 
 Crime Logic
 -----------
